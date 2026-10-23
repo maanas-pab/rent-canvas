@@ -1,5 +1,7 @@
 # Rent = Canvas
 
+[![CI](https://github.com/maanas-pab/rent-canvas/actions/workflows/ci.yml/badge.svg)](https://github.com/maanas-pab/rent-canvas/actions/workflows/ci.yml)
+
 **What your rent buys, drawn to scale.**
 
 Every white square below is a studio apartment — its area is exactly the
@@ -79,6 +81,13 @@ The `--export` pass writes one canvas per city plus both walls:
 *Each city at its own local rent — what a resident actually gets for the
 price they pay. Tokyo, paying more than Berlin, gets less than half the canvas.*
 
+### Tests
+
+```bash
+pip install -r requirements-dev.txt
+pytest
+```
+
 ## Data & caveats
 
 Figures in `data/rents.csv` are **indicative late-2025 asking rents** for
@@ -90,9 +99,11 @@ market. Currencies are flattened to USD for a single wall.
 ## Layout
 
 ```
-rent_canvas.py       # load → sqft → draw → export (~190 lines)
-data/rents.csv       # city, monthly_rent_usd, price_per_sqft_usd
-images/              # exported PNGs used in this README
+rent_canvas.py            # load → sqft → draw → export (~190 lines)
+data/rents.csv            # city, monthly_rent_usd, price_per_sqft_usd
+images/                   # exported PNGs used in this README
+test_rent_canvas.py       # math sanity checks
+.github/workflows/ci.yml  # pytest + table on every push
 ```
 
 ## License
