@@ -16,6 +16,11 @@ WALL_W, WALL_H = 1600.0, 440.0
 # Shared scale: pixels per sqrt(sqft). 1000 sqft -> ~600px mural.
 K = 600.0 / (1000.0 ** 0.5)
 
+SHORT = {
+    "San Francisco": "S.F.", "Los Angeles": "L.A.", "Mexico City": "MEXICO",
+    "New York": "N.Y.C.",
+}
+
 
 def load_rents() -> pd.DataFrame:
     df = pd.read_csv(DATA)
@@ -91,9 +96,10 @@ def wall_figure(df: pd.DataFrame, budget: Optional[float] = None) -> go.Figure:
             x0=x, y0=rail - side, x1=x + side, y1=rail,
             fillcolor=CANVAS, line=dict(color="#ffffff", width=1.2),
         )
+        name = SHORT.get(row.city, row.city).upper()
         labels.append(dict(
             x=x + side / 2, y=rail - max(sides) - 22,
-            text=f"<b>{row.city.upper()}</b><br>"
+            text=f"<b>{name}</b><br>"
                  f"<span style='color:#8a8a93'>{row.sqft:,.0f} sq ft</span>",
             showarrow=False, xanchor="center", yanchor="top",
             font=dict(color="#e8e8ee", size=12, family="Georgia, serif"),
@@ -120,14 +126,71 @@ def wall_figure(df: pd.DataFrame, budget: Optional[float] = None) -> go.Figure:
     return fig
 
 
-if __name__ == "__main__":
-    df = load_rents()
-    nyc_row = df[df.city == "New York"].iloc[0]
-    sqft = float(affordable_sqft(df[df.city == "New York"]).iloc[0])
-    fig = canvas_figure(
-        sqft,
-        "NEW YORK",
-        f"${nyc_row.monthly_rent_usd:,.0f}/mo · {sqft:,.0f} sq ft",
+def export_all(df: pd.DataFrame, out_dir: Path) -> None:
+    """Render every city canvas plus gallery walls for the README."""
+    out_dir.mkdir(parents=True, exist_ok=True)
+
+    d = df.copy()
+    d["sqft"] = affordable_sqft(d)
+    for _, row in d.iterrows():
+        slug = row.city.lower().replace(" ", "-")
+        fig = canvas_figure(
+            float(row.sqft), row.city.upper(),
+            f"${row.monthly_rent_usd:,.0f}/mo · {row.sqft:,.0f} sq ft",
+        )
+        fig.write_image(out_dir / f"canvas-{slug}.png")
+        print(f"  canvas-{slug}.png")
+
+    wall_figure(d).write_image(out_dir / "wall-local.png")
+    print("  wall-local.png")
+    # the money shot: one fixed NYC-sized budget, spent everywhere
+    wall_figure(d, budget=3400).write_image(out_dir / "wall-3400.png")
+    print("  wall-3400.png")
+
+
+def main() -> None:
+    import argparse
+
+    p = argparse.ArgumentParser(
+        description="Draw what monthly rent buys as a canvas, to scale.",
     )
-    fig.write_image("canvas_nyc.png")
-    wall_figure(df).write_image("wall.png")
+    p.add_argument("city", nargs="?", help="city name (e.g. 'New York')")
+    p.add_argument("--budget", type=float, default=None,
+                   help="monthly USD budget (default: each city's own rent)")
+    p.add_argument("--wall", action="store_true",
+                   help="render the full gallery wall")
+    p.add_argument("--export", metavar="DIR", default=None,
+                   help="export every city canvas + walls as PNGs")
+    args = p.parse_args()
+
+    df = load_rents()
+
+    if args.export:
+        export_all(df, Path(args.export))
+        return
+
+    if args.wall:
+        wall_figure(df, args.budget).show()
+        return
+
+    if args.city:
+        match = df[df.city.str.lower() == args.city.lower()]
+        if match.empty:
+            p.error(f"unknown city {args.city!r}; try: {', '.join(df.city)}")
+        row = match.iloc[0]
+        sqft = float(affordable_sqft(match, args.budget).iloc[0])
+        spend = args.budget if args.budget else row.monthly_rent_usd
+        fig = canvas_figure(
+            sqft, row.city.upper(),
+            f"${spend:,.0f}/mo · {sqft:,.0f} sq ft",
+        )
+        fig.show()
+        return
+
+    out = df.assign(sqft=affordable_sqft(df, args.budget))
+    print(out[["city", "monthly_rent_usd", "sqft"]]
+          .sort_values("sqft").to_string(index=False))
+
+
+if __name__ == "__main__":
+    main()
