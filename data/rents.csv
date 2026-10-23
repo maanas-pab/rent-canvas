@@ -1,0 +1,17 @@
+city,country,monthly_rent_usd,price_per_sqft_usd
+New York,US,3400,8.50
+San Francisco,US,2900,7.20
+Boston,US,2800,6.80
+London,UK,2600,6.00
+Los Angeles,US,2100,4.60
+Seattle,US,1900,4.20
+Chicago,US,1700,3.50
+Tokyo,JP,1400,4.00
+Berlin,DE,1300,2.20
+Barcelona,ES,1250,2.70
+Lisbon,PT,1200,2.60
+Mexico City,MX,1050,1.80
+Tulsa,US,950,1.00
+Detroit,US,875,1.05
+Mumbai,IN,700,1.30
+Cairo,EG,450,0.55
