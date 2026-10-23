@@ -1,5 +1,6 @@
 """Rent = Canvas. What your monthly rent buys, drawn to scale."""
 
+import argparse
 from pathlib import Path
 from typing import Optional
 
@@ -8,7 +9,6 @@ import plotly.graph_objects as go
 
 DATA = Path(__file__).parent / "data" / "rents.csv"
 
-INK = "#111114"
 WALL = "#1a1a1e"
 CANVAS = "#f4f2ed"
 VIEW_W, VIEW_H = 1000.0, 720.0
@@ -83,7 +83,7 @@ def wall_figure(df: pd.DataFrame, budget: Optional[float] = None) -> go.Figure:
     gap = 26.0
     pad = 48.0
     natural = sides.sum() + gap * (len(d) - 1) + 2 * pad
-    fit = (WALL_W - 0) / natural  # squeeze the whole hang to wall width
+    fit = WALL_W / natural  # squeeze the whole hang to wall width
     sides, gap = sides * fit, gap * fit
 
     fig = go.Figure()
@@ -149,8 +149,6 @@ def export_all(df: pd.DataFrame, out_dir: Path) -> None:
 
 
 def main() -> None:
-    import argparse
-
     p = argparse.ArgumentParser(
         description="Draw what monthly rent buys as a canvas, to scale.",
     )
