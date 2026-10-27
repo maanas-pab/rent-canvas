@@ -67,10 +67,13 @@ python rent_canvas.py                    # ranked table of what rent buys
 python rent_canvas.py "New York"         # single canvas in the browser
 python rent_canvas.py "Berlin" --budget 3400   # $3,400 spent in Berlin
 python rent_canvas.py --wall             # full gallery wall
+python rent_canvas.py --bars             # every city ranked as bars
+python rent_canvas.py --scatter          # rent vs. space scatter
 python rent_canvas.py --export images/   # PNGs (what README uses)
 ```
 
-The `--export` pass writes one canvas per city plus both walls:
+The `--export` pass writes one canvas per city, both walls, and both
+charts:
 
 <p align="center">
   <img src="images/wall-local.png" alt="Wall: each city at its own local rent" width="100%">
@@ -78,6 +81,27 @@ The `--export` pass writes one canvas per city plus both walls:
 
 *Each city at its own local rent — what a resident actually gets for the
 price they pay. Tokyo, paying more than Berlin, gets less than half the canvas.*
+
+## By the numbers
+
+The same data, argued two other ways — still white on the gallery dark,
+still drawn to scale.
+
+<p align="center">
+  <img src="images/chart-ranking.png" alt="Bars ranking every city by the studio square footage its median rent buys" width="92%">
+</p>
+
+*Tulsa hands over 950 sq ft for $950; Paris hands over 281 for $1,350.
+New York — flagged gold — pays the most for one of the smallest
+canvases: $8.50 per square foot, roughly fifteen times Cairo's $0.55.*
+
+<p align="center">
+  <img src="images/chart-scatter.png" alt="Scatter plot of monthly rent against studio square footage across 23 cities" width="92%">
+</p>
+
+*Both variables in one frame. Bargains float up-left (Cairo, Tulsa);
+the expensive trap sits down-right. The dotted rule is $3/sq ft —
+everything below it is paying more than that for air.*
 
 ### Tests
 
