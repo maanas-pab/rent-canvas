@@ -1,7 +1,5 @@
 # Rent = Canvas
 
-[![CI](https://github.com/maanas-pab/rent-canvas/actions/workflows/ci.yml/badge.svg)](https://github.com/maanas-pab/rent-canvas/actions/workflows/ci.yml)
-
 **What your rent buys, drawn to scale.**
 
 Every white square below is a studio apartment — its area is exactly the
@@ -103,7 +101,7 @@ rent_canvas.py            # load → sqft → draw → export (~190 lines)
 data/rents.csv            # city, monthly_rent_usd, price_per_sqft_usd
 images/                   # exported PNGs used in this README
 test_rent_canvas.py       # math sanity checks
-.github/workflows/ci.yml  # pytest + table on every push
+requirements-dev.txt      # pytest, for the checks above
 ```
 
 ## License
