@@ -2,6 +2,9 @@
 
 **What your rent buys, drawn to scale.**
 
+**Live gallery → <https://maanas-pab.github.io/rent-canvas/>**
+— the whole show, rendered by GitHub Pages from the same CSV.
+
 Every white square below is a studio apartment — its area is exactly the
 square footage a month of rent buys in that city. New York's $3,400 is a
 postage stamp. Cairo's $450 is a full mural. Same medium, wildly different
@@ -124,8 +127,10 @@ market. Currencies are flattened to USD for a single wall.
 
 ```
 rent_canvas.py            # load → sqft → draw → export (~410 lines)
+build_site.py             # renders docs/ from the same dataframe
 data/rents.csv            # city, monthly_rent_usd, price_per_sqft_usd
 images/                   # exported PNGs used in this README
+docs/                     # the GitHub Pages site (generated, committed)
 test_rent_canvas.py       # math sanity checks
 requirements-dev.txt      # pytest, for the checks above
 ```
