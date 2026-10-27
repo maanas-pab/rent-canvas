@@ -11,6 +11,7 @@ DATA = Path(__file__).parent / "data" / "rents.csv"
 
 WALL = "#1a1a1e"
 CANVAS = "#f4f2ed"
+ACCENT = "#e8c468"    # placard gold — used to flag the dataset's punchlines
 VIEW_W, VIEW_H = 1000.0, 720.0
 WALL_W = 2400.0  # wall height is computed from the hang itself
 # Shared scale: pixels per sqrt(sqft). 1000 sqft -> ~600px mural.
@@ -201,6 +202,48 @@ def wall_figure(df: pd.DataFrame, budget: Optional[float] = None) -> go.Figure:
     return fig
 
 
+def bar_figure(df: pd.DataFrame, budget: Optional[float] = None) -> go.Figure:
+    """Cities ranked by canvas, biggest space at the top.
+
+    Same palette as the walls — white bars on the dark gallery wall,
+    New York flagged in gold because it's the punchline of the dataset.
+    """
+    d = df.assign(sqft=affordable_sqft(df, budget)).sort_values("sqft")
+    colors = [ACCENT if c == "New York" else CANVAS for c in d.city]
+
+    fig = go.Figure(go.Bar(
+        x=d.sqft, y=d.city, orientation="h",
+        marker=dict(color=colors, line=dict(color=WALL, width=1)),
+        text=[f"{s:,.0f}" for s in d.sqft],
+        textposition="outside", textfont=dict(color="#b9b9c2", size=12),
+        hovertemplate="%{y}: %{x:,.0f} sq ft<extra></extra>",
+    ))
+    fig.update_layout(
+        width=1100, height=880,
+        plot_bgcolor=WALL, paper_bgcolor=WALL,
+        margin=dict(l=140, r=70, t=90, b=60),
+        bargap=0.32,
+        xaxis=dict(
+            title=dict(text="square feet of studio", font=dict(color="#8a8a93", size=13)),
+            gridcolor="#2c2c33", zeroline=False, range=[0, d.sqft.max() * 1.12],
+            tickfont=dict(color="#8a8a93", size=12),
+        ),
+        yaxis=dict(
+            tickfont=dict(color="#e8e8ee", size=14, family="Georgia, serif"),
+            domain=[0.02, 1], automargin=True,
+        ),
+        annotations=[dict(
+            text="<b>WHAT A MONTH OF RENT BUYS</b> &nbsp;— &nbsp;"
+                 "<span style='color:#8a8a93;font-size:14px'>studio square footage by city, "
+                 "each city's own median rent</span>",
+            xref="paper", yref="paper", x=0, y=1.075, xanchor="left", yanchor="top",
+            font=dict(color="#e8e8ee", size=21, family="Georgia, serif"),
+            showarrow=False,
+        )],
+    )
+    return fig
+
+
 def export_all(df: pd.DataFrame, out_dir: Path) -> None:
     """Render every city canvas plus gallery walls for the README."""
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -221,6 +264,8 @@ def export_all(df: pd.DataFrame, out_dir: Path) -> None:
     # the money shot: one fixed NYC-sized budget, spent everywhere
     wall_figure(d, budget=3400).write_image(out_dir / "wall-3400.png")
     print("  wall-3400.png")
+    bar_figure(d).write_image(out_dir / "chart-ranking.png")
+    print("  chart-ranking.png")
 
 
 def main() -> None:
@@ -232,6 +277,8 @@ def main() -> None:
                    help="monthly USD budget (default: each city's own rent)")
     p.add_argument("--wall", action="store_true",
                    help="render the full gallery wall")
+    p.add_argument("--bars", action="store_true",
+                   help="rank every city by the space its rent buys")
     p.add_argument("--export", metavar="DIR", default=None,
                    help="export every city canvas + walls as PNGs")
     args = p.parse_args()
@@ -244,6 +291,10 @@ def main() -> None:
 
     if args.wall:
         wall_figure(df, args.budget).show()
+        return
+
+    if args.bars:
+        bar_figure(df, args.budget).show()
         return
 
     if args.city:
