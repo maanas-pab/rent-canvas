@@ -202,6 +202,88 @@ def wall_figure(df: pd.DataFrame, budget: Optional[float] = None) -> go.Figure:
     return fig
 
 
+def scatter_figure(df: pd.DataFrame, budget: Optional[float] = None) -> go.Figure:
+    """Rent against the space it buys — the shape of the whole dataset.
+
+    Every city's own rent on x, canvas on y: the bargain sits up-left
+    (Tulsa: cheap, huge), the trap down-right (New York: gold, tiny).
+    A dashed $3/sqft iso-line gives the cloud something to be measured
+    against.
+    """
+    d = df.assign(sqft=affordable_sqft(df, budget))
+    gold = d.city == "New York"
+
+    fig = go.Figure()
+    fig.add_annotation(
+        text="<b>THE PRICE OF SPACE</b> &nbsp;— &nbsp;"
+             "<span style='color:#8a8a93;font-size:14px'>what each city's rent pays for; "
+             "up-left is the bargain</span>",
+        xref="paper", yref="paper", x=0, y=1.09, xanchor="left", yanchor="top",
+        font=dict(color="#e8e8ee", size=21, family="Georgia, serif"),
+        showarrow=False,
+    )
+    fig.add_trace(go.Scatter(
+        x=d.monthly_rent_usd, y=d.sqft, mode="markers",
+        showlegend=False,
+        marker=dict(
+            size=12,
+            color=[ACCENT if g else CANVAS for g in gold],
+            line=dict(color=WALL, width=1.5),
+        ),
+        text=d.city, hovertemplate="%{text}<br>$%{x:,.0f}/mo · %{y:,.0f} sq ft"
+                                   "<extra></extra>",
+    ))
+    fig.add_trace(go.Scatter(
+        x=[300, 3150], y=[100, 1050], mode="lines",
+        line=dict(color="#4a4a52", width=1.5, dash="dot"),
+        hoverinfo="skip", showlegend=False,
+    ))
+
+    marks = [
+        ("New York", 3400, 400, "right"),
+        ("Tulsa", 950, 950, "right"),
+        ("Cairo", 450, 818, "right"),
+        ("Paris", 1350, 281, "below"),
+        ("Tokyo", 1400, 350, "above"),
+    ]
+    place = {
+        "right": dict(xanchor="left", xshift=14, yanchor="middle", yshift=0),
+        "below": dict(xanchor="center", xshift=0, yanchor="top", yshift=-14),
+        "above": dict(xanchor="center", xshift=0, yanchor="bottom", yshift=14),
+    }
+    for name, x, y, pos in marks:
+        fig.add_annotation(
+            x=x, y=y, text=f"<b>{name.upper()}</b>", showarrow=False,
+            **place[pos],
+            font=dict(color="#e8e8ee", size=13, family="Georgia, serif"),
+        )
+    fig.add_annotation(
+        x=2650, y=905, text="<span style='color:#8a8a93'>$3 / sq ft</span>",
+        showarrow=False, textangle=-18,
+        font=dict(color="#8a8a93", size=12, family="Georgia, serif"),
+    )
+
+    fig.update_layout(
+        width=1100, height=700,
+        plot_bgcolor=WALL, paper_bgcolor=WALL,
+        margin=dict(l=70, r=50, t=95, b=60),
+        xaxis=dict(
+            title=dict(text="monthly rent (USD)", font=dict(color="#8a8a93", size=13)),
+            gridcolor="#2c2c33", zeroline=False,
+            tickprefix="$", tickformat=",.0f",
+            tickfont=dict(color="#8a8a93", size=12),
+            range=[300, 3650],
+        ),
+        yaxis=dict(
+            title=dict(text="square feet of studio", font=dict(color="#8a8a93", size=13)),
+            gridcolor="#2c2c33", zeroline=False,
+            tickfont=dict(color="#8a8a93", size=12),
+            range=[150, 1050],
+        ),
+    )
+    return fig
+
+
 def bar_figure(df: pd.DataFrame, budget: Optional[float] = None) -> go.Figure:
     """Cities ranked by canvas, biggest space at the top.
 
@@ -266,6 +348,8 @@ def export_all(df: pd.DataFrame, out_dir: Path) -> None:
     print("  wall-3400.png")
     bar_figure(d).write_image(out_dir / "chart-ranking.png")
     print("  chart-ranking.png")
+    scatter_figure(d).write_image(out_dir / "chart-scatter.png")
+    print("  chart-scatter.png")
 
 
 def main() -> None:
@@ -279,6 +363,8 @@ def main() -> None:
                    help="render the full gallery wall")
     p.add_argument("--bars", action="store_true",
                    help="rank every city by the space its rent buys")
+    p.add_argument("--scatter", action="store_true",
+                   help="plot rent against the space it buys")
     p.add_argument("--export", metavar="DIR", default=None,
                    help="export every city canvas + walls as PNGs")
     args = p.parse_args()
@@ -295,6 +381,10 @@ def main() -> None:
 
     if args.bars:
         bar_figure(df, args.budget).show()
+        return
+
+    if args.scatter:
+        scatter_figure(df, args.budget).show()
         return
 
     if args.city:
