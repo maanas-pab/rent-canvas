@@ -8,7 +8,7 @@ postage stamp. Cairo's $450 is a full mural. Same medium, wildly different
 canvas.
 
 <p align="center">
-  <img src="images/wall-3400.png" alt="Gallery wall: what $3,400/mo rents in 16 cities, drawn to scale" width="100%">
+  <img src="images/wall-3400.png" alt="Gallery wall: what $3,400/mo rents in 23 cities, drawn to scale" width="100%">
 </p>
 
 *One $3,400 budget — New York's median studio rent — spent in every city.
@@ -29,6 +29,7 @@ works in a gallery. The geometry does the arguing.
 
 | City | Rent | Canvas |
 |:-----|-----:|-------:|
+| Paris | $1,350/mo | 281 sq ft |
 | Tokyo | $1,400/mo | 350 sq ft |
 | New York | $3,400/mo | 400 sq ft |
 | Berlin | $1,300/mo | 591 sq ft |
@@ -49,8 +50,9 @@ sqft = monthly_rent_usd / price_per_sqft_usd
 side = K × √sqft        # true-area scaling, shared K across every render
 ```
 
-- **Data** — `data/rents.csv` holds 16 cities: median studio/1-bed asking
-  rent in USD and an indicative price per square foot.
+- **Data** — `data/rents.csv` holds 23 cities: median studio/1-bed
+  asking rent in USD and an indicative price per square foot, from
+  Paris (281 sq ft) to Tulsa (950 sq ft).
 - **Render** — `rent_canvas.py` draws each city as a Plotly rectangle on a
   gallery-dark wall. One shared pixel scale (`K`) means every image is
   directly comparable: Tokyo's stamp is a stamp in every frame.
@@ -121,7 +123,7 @@ market. Currencies are flattened to USD for a single wall.
 ## Layout
 
 ```
-rent_canvas.py            # load → sqft → draw → export (~190 lines)
+rent_canvas.py            # load → sqft → draw → export (~410 lines)
 data/rents.csv            # city, monthly_rent_usd, price_per_sqft_usd
 images/                   # exported PNGs used in this README
 test_rent_canvas.py       # math sanity checks
