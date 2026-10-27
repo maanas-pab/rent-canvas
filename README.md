@@ -36,9 +36,9 @@ works in a gallery. The geometry does the arguing.
 | Tulsa | $950/mo | 950 sq ft |
 
 <p align="center">
-  <img src="images/canvas-new-york.png" width="32%">
-  <img src="images/canvas-berlin.png" width="32%">
-  <img src="images/canvas-tulsa.png" width="32%">
+  <img src="images/canvas-new-york.png" alt="New York: 400 sq ft for $3,400/mo" width="32%">
+  <img src="images/canvas-berlin.png" alt="Berlin: 591 sq ft for $1,300/mo" width="32%">
+  <img src="images/canvas-tulsa.png" alt="Tulsa: 950 sq ft for $950/mo" width="32%">
 </p>
 
 <p align="center"><em>New York · Berlin · Tulsa — each at its own local rent.</em></p>
