@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rent = Canvas — what your rent buys, drawn to scale</title>
+<meta name="description" content="Monthly rent, treated as a budget for canvas: 23 cities, each studio drawn to scale as a white rectangle on a dark gallery wall.">
+<meta property="og:title" content="Rent = Canvas">
+<meta property="og:description" content="What your rent buys, drawn to scale — a white canvas on a dark gallery wall.">
+<meta property="og:image" content="images/wall-3400.png">
+<style>
+:root {
+  --wall: #1a1a1e;
+  --wall-2: #141417;
+  --line: #2c2c33;
+  --canvas: #f4f2ed;
+  --ink: #e8e8ee;
+  --muted: #8a8a93;
+  --gold: #e8c468;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--wall);
+  color: var(--ink);
+  font-family: Georgia, "Times New Roman", serif;
+  line-height: 1.65;
+}
+.wrap { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
+a { color: var(--gold); text-decoration: none; border-bottom: 1px solid #55503c; }
+a:hover { border-bottom-color: var(--gold); }
+header { padding: 72px 0 8px; text-align: center; }
+h1 {
+  font-size: clamp(1.6rem, 7vw, 4.2rem);
+  letter-spacing: 0.06em;
+  margin: 0;
+}
+.tagline { color: var(--muted); font-style: italic; font-size: 1.15rem; }
+.lede { max-width: 46em; margin: 26px auto 0; color: #c9c9d2; }
+h2 {
+  font-size: 1.5rem;
+  letter-spacing: 0.08em;
+  margin: 72px 0 8px;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 10px;
+}
+h2 .sub {
+  display: block;
+  font-size: 0.92rem;
+  font-weight: normal;
+  font-style: italic;
+  color: var(--muted);
+  letter-spacing: 0;
+  margin-top: 4px;
+}
+figure { margin: 34px 0; text-align: center; }
+figure img { max-width: 100%; height: auto; border: 1px solid var(--line); }
+figcaption {
+  color: var(--muted);
+  font-style: italic;
+  font-size: 0.95rem;
+  margin: 12px auto 0;
+  max-width: 46em;
+  text-align: center;
+}
+.stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin: 34px 0;
+}
+.stat {
+  flex: 1 1 160px;
+  background: var(--wall-2);
+  border: 1px solid var(--line);
+  padding: 18px 20px;
+  text-align: center;
+}
+.stat .n { font-size: 1.9rem; color: var(--gold); }
+.stat .l { color: var(--muted); font-size: 0.88rem; font-style: italic; }
+pre {
+  background: var(--wall-2);
+  border: 1px solid var(--line);
+  padding: 16px 20px;
+  overflow-x: auto;
+  color: #c9c9d2;
+  font-size: 0.98rem;
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 20px;
+  margin-top: 30px;
+}
+.grid figure { margin: 0; }
+.grid img { width: 100%; display: block; }
+table {
+  border-collapse: collapse;
+  margin: 26px 0;
+  width: 100%;
+  max-width: 560px;
+}
+th, td { padding: 8px 14px; text-align: left; }
+th:last-child, td:last-child { text-align: right; }
+th { color: var(--muted); font-weight: normal; font-style: italic; }
+tbody tr { border-top: 1px solid var(--line); }
+td.num { font-variant-numeric: tabular-nums; }
+.note { color: var(--muted); font-size: 0.95rem; max-width: 46em; }
+footer {
+  margin-top: 80px;
+  border-top: 1px solid var(--line);
+  padding: 28px 0 48px;
+  color: var(--muted);
+  font-size: 0.92rem;
+  text-align: center;
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>RENT&nbsp;=&nbsp;CANVAS</h1>
+  <p class="tagline">What your rent buys, drawn to scale.</p>
+  <p class="lede">Every white square on this page is a studio apartment — its
+  area is exactly the square footage a month of rent buys in that city.
+  New&nbsp;York's&nbsp;$3,400 is a postage stamp. Tulsa's mural takes the wall.
+  Same medium, wildly different canvas.</p>
+</header>
+
+<figure>
+  <img src="images/wall-3400.png" alt="Gallery wall: what $3,400 per month rents in 23 cities, drawn to scale">
+</figure>
+<figcaption><em>One $3,400 budget — New York's median studio rent —
+spent in every city. Side length grows with &radic;sqft, so every canvas is
+true-area scaled.</em></figcaption>
+
+<h2>THE ART
+  <span class="sub">rent divided by local price per square foot, framed</span>
+</h2>
+<p class="lede" style="margin-left:0">Rent is abstract until you can hang it on
+a wall. This project treats monthly rent as a <strong>budget for canvas</strong>:
+divide the dollars by the local price per square foot and you get the size of
+the blank rectangle you're paying for. The bigger the rent, the smaller the
+canvas. The cheaper the city, the more wall you get. No photos, no floor
+plans — just white rectangles on a dark wall. The geometry does the arguing.</p>
+<pre>sqft = monthly_rent_usd / price_per_sqft_usd
+side = K &times; &radic;sqft        # true-area scaling, shared K across every render</pre>
+
+<div class="stats">
+  <div class="stat"><div class="n">23</div><div class="l">cities on the wall</div></div>
+  <div class="stat"><div class="n">$8.50</div><div class="l">per sq ft — New York</div></div>
+  <div class="stat"><div class="n">$0.55</div><div class="l">per sq ft — Cairo</div></div>
+  <div class="stat"><div class="n">15&times;</div><div class="l">the spread between them</div></div>
+</div>
+
+<h2>BY THE NUMBERS
+  <span class="sub">the same data, argued two other ways</span>
+</h2>
+<figure><img src="images/chart-ranking.png" alt="Bars ranking every city by the studio square footage its median rent buys" loading="lazy"></figure><figcaption>Tulsa hands over 950 sq ft for $950; Paris hands over 281 for $1,350. New York, flagged gold, pays the most for one of the smallest canvases.</figcaption>
+<figure><img src="images/chart-scatter.png" alt="Scatter plot of monthly rent against studio square footage" loading="lazy"></figure><figcaption>Bargains float up-left; the expensive trap sits down-right. The dotted rule is $3/sq ft — everything below it is paying more than that for air.</figcaption>
+
+<h2>THE LOCAL WALL
+  <span class="sub">each city at its own rent — what residents actually get</span>
+</h2>
+<figure><img src="images/wall-local.png" alt="Wall: each city at its own local monthly rent" loading="lazy"></figure><figcaption>Tokyo, paying more than Berlin, gets less than half the canvas.</figcaption>
+
+<h2>THE GALLERY
+  <span class="sub">every canvas, largest to smallest — each labeled with its rent</span>
+</h2>
+<div class="grid"><figure><img src="images/canvas-tulsa.png" alt="Tulsa: 950 sq ft for $950/mo" loading="lazy"></figure><figure><img src="images/canvas-detroit.png" alt="Detroit: 833 sq ft for $875/mo" loading="lazy"></figure><figure><img src="images/canvas-cairo.png" alt="Cairo: 818 sq ft for $450/mo" loading="lazy"></figure><figure><img src="images/canvas-dubai.png" alt="Dubai: 600 sq ft for $1,800/mo" loading="lazy"></figure><figure><img src="images/canvas-berlin.png" alt="Berlin: 591 sq ft for $1,300/mo" loading="lazy"></figure><figure><img src="images/canvas-mexico-city.png" alt="Mexico City: 583 sq ft for $1,050/mo" loading="lazy"></figure><figure><img src="images/canvas-sao-paulo.png" alt="Sao Paulo: 545 sq ft for $600/mo" loading="lazy"></figure><figure><img src="images/canvas-mumbai.png" alt="Mumbai: 538 sq ft for $700/mo" loading="lazy"></figure><figure><img src="images/canvas-chicago.png" alt="Chicago: 486 sq ft for $1,700/mo" loading="lazy"></figure><figure><img src="images/canvas-barcelona.png" alt="Barcelona: 463 sq ft for $1,250/mo" loading="lazy"></figure><figure><img src="images/canvas-lisbon.png" alt="Lisbon: 462 sq ft for $1,200/mo" loading="lazy"></figure><figure><img src="images/canvas-los-angeles.png" alt="Los Angeles: 457 sq ft for $2,100/mo" loading="lazy"></figure><figure><img src="images/canvas-toronto.png" alt="Toronto: 456 sq ft for $1,550/mo" loading="lazy"></figure><figure><img src="images/canvas-seattle.png" alt="Seattle: 452 sq ft for $1,900/mo" loading="lazy"></figure><figure><img src="images/canvas-london.png" alt="London: 433 sq ft for $2,600/mo" loading="lazy"></figure><figure><img src="images/canvas-bangkok.png" alt="Bangkok: 433 sq ft for $650/mo" loading="lazy"></figure><figure><img src="images/canvas-boston.png" alt="Boston: 412 sq ft for $2,800/mo" loading="lazy"></figure><figure><img src="images/canvas-san-francisco.png" alt="San Francisco: 403 sq ft for $2,900/mo" loading="lazy"></figure><figure><img src="images/canvas-sydney.png" alt="Sydney: 402 sq ft for $1,650/mo" loading="lazy"></figure><figure><img src="images/canvas-new-york.png" alt="New York: 400 sq ft for $3,400/mo" loading="lazy"></figure><figure><img src="images/canvas-amsterdam.png" alt="Amsterdam: 380 sq ft for $1,750/mo" loading="lazy"></figure><figure><img src="images/canvas-tokyo.png" alt="Tokyo: 350 sq ft for $1,400/mo" loading="lazy"></figure><figure><img src="images/canvas-paris.png" alt="Paris: 281 sq ft for $1,350/mo" loading="lazy"></figure></div>
+
+<h2>THE NUMBERS
+  <span class="sub">the full roster</span>
+</h2>
+<table>
+  <thead><tr><th>City</th><th>Rent</th><th>Canvas</th></tr></thead>
+  <tbody><tr><td>Tulsa</td><td class="num">$950/mo</td><td class="num">950 sq ft</td></tr><tr><td>Detroit</td><td class="num">$875/mo</td><td class="num">833 sq ft</td></tr><tr><td>Cairo</td><td class="num">$450/mo</td><td class="num">818 sq ft</td></tr><tr><td>Dubai</td><td class="num">$1,800/mo</td><td class="num">600 sq ft</td></tr><tr><td>Berlin</td><td class="num">$1,300/mo</td><td class="num">591 sq ft</td></tr><tr><td>Mexico City</td><td class="num">$1,050/mo</td><td class="num">583 sq ft</td></tr><tr><td>Sao Paulo</td><td class="num">$600/mo</td><td class="num">545 sq ft</td></tr><tr><td>Mumbai</td><td class="num">$700/mo</td><td class="num">538 sq ft</td></tr><tr><td>Chicago</td><td class="num">$1,700/mo</td><td class="num">486 sq ft</td></tr><tr><td>Barcelona</td><td class="num">$1,250/mo</td><td class="num">463 sq ft</td></tr><tr><td>Lisbon</td><td class="num">$1,200/mo</td><td class="num">462 sq ft</td></tr><tr><td>Los Angeles</td><td class="num">$2,100/mo</td><td class="num">457 sq ft</td></tr><tr><td>Toronto</td><td class="num">$1,550/mo</td><td class="num">456 sq ft</td></tr><tr><td>Seattle</td><td class="num">$1,900/mo</td><td class="num">452 sq ft</td></tr><tr><td>London</td><td class="num">$2,600/mo</td><td class="num">433 sq ft</td></tr><tr><td>Bangkok</td><td class="num">$650/mo</td><td class="num">433 sq ft</td></tr><tr><td>Boston</td><td class="num">$2,800/mo</td><td class="num">412 sq ft</td></tr><tr><td>San Francisco</td><td class="num">$2,900/mo</td><td class="num">403 sq ft</td></tr><tr><td>Sydney</td><td class="num">$1,650/mo</td><td class="num">402 sq ft</td></tr><tr><td>New York</td><td class="num">$3,400/mo</td><td class="num">400 sq ft</td></tr><tr><td>Amsterdam</td><td class="num">$1,750/mo</td><td class="num">380 sq ft</td></tr><tr><td>Tokyo</td><td class="num">$1,400/mo</td><td class="num">350 sq ft</td></tr><tr><td>Paris</td><td class="num">$1,350/mo</td><td class="num">281 sq ft</td></tr></tbody>
+</table>
+
+<h2>DATA &amp; CAVEATS</h2>
+<p class="note">Figures are indicative late-2025 asking rents for studios /
+one-bedrooms in central-ish neighborhoods, in USD, with rounded
+price-per-sqft estimates. They are meant for comparison, not for lease
+negotiation. Real rents vary by neighborhood, building, and mood of the
+market. Currencies are flattened to USD for a single wall.</p>
+
+<footer>
+  MIT · built with pandas &amp; Plotly ·
+  <a href="https://github.com/maanas-pab/rent-canvas">source on GitHub</a>
+</footer>
+
+</div>
+</body>
+</html>

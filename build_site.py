@@ -266,6 +266,8 @@ def main() -> None:
         shutil.copy2(png, docs_images / png.name)
 
     (DOCS / "index.html").write_text(build(load_rents()), encoding="utf-8")
+    # serve it raw: no Jekyll pass to rewrite paths or drop files
+    (DOCS / ".nojekyll").touch()
     print(f"wrote docs/index.html + {len(list(docs_images.glob('*.png')))} pngs")
 
 
